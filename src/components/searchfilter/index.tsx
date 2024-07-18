@@ -58,7 +58,6 @@ const SearchFiltersCont = styled.div<SearchFiltersContProps>`
   padding: 20px;
   border-radius: 3px;
   transition: all 0.3s ease-in-out;
-  width: 100%;
 
   ${(props) =>
     props.marginBottom &&

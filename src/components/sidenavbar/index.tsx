@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { NavLink as Link } from "react-router-dom";
+import { NavLink as Link, useLocation } from "react-router-dom";
 
 import * as colors from "../../colors";
 import Arrow from "../../images/arrow-icon.png";
@@ -11,14 +11,24 @@ type NavIconProps = {
   search?: boolean;
 };
 
-export default function SideNavBar() {
-  const [activeSideBar] = useState();
+type SideNavBarContProps = {
+  isVisible: boolean;
+};
 
-  /* Write the necessary functions to show/hide the side bar on mobile devices */
+export default function SideNavBar() {
+  const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+
+  const toggleSidebar = () => {
+    setIsVisible(!isVisible);
+  };
+
+  useEffect(() => {
+    // You can add any side effects here if needed
+  }, []);
 
   return (
-    <SideNavBarCont className={activeSideBar && "visible"}>
-      {/* Implement a hamburger icon slide in effect for mobile devices */}
+    <SideNavBarCont isVisible={isVisible}>
       <SideNavMainLink
         className="menu_nav_link main_nav_link"
         to="/"
@@ -26,8 +36,9 @@ export default function SideNavBar() {
         exact
       >
         Wesley
-        {/* Add types for the props of 'NavIcon' */}
-        <NavIcon arrow></NavIcon>
+        <NavIcon arrow>
+          <img src={Arrow} alt="Arrow" />
+        </NavIcon>
       </SideNavMainLink>
       <SideNavMainLink
         className="menu_nav_link"
@@ -35,52 +46,44 @@ export default function SideNavBar() {
         activeClassName="active"
       >
         Discover
-        <NavIcon search></NavIcon>
+        <NavIcon search>
+          <img src={SearchWhite} alt="Search" />
+        </NavIcon>
       </SideNavMainLink>
       <SideNavHeader>
         <HeaderText>Watched</HeaderText>
       </SideNavHeader>
-      <NavLink
-        className="menu_nav_link"
-        to="/watched/movies"
-        activeClassName="active"
-      >
+      <NavLink className="menu_nav_link" to="/watched/movies">
         Movies
       </NavLink>
-      <NavLink
-        className="menu_nav_link"
-        to="/watched/tv-shows"
-        activeClassName="active"
-      >
+      <NavLink className="menu_nav_link" to="/watched/tv-shows">
         Tv Shows
       </NavLink>
       <SideNavHeader>
         <HeaderText>Saved</HeaderText>
       </SideNavHeader>
-      <NavLink
-        className="menu_nav_link"
-        to="/saved/movies"
-        activeClassName="active"
-      >
+      <NavLink className="menu_nav_link" to="/saved/movies">
         Movies
       </NavLink>
-      <NavLink
-        className="menu_nav_link"
-        to="/saved/tv-shows"
-        activeClassName="active"
-      >
+      <NavLink className="menu_nav_link" to="/saved/tv-shows">
         Tv Shows
       </NavLink>
     </SideNavBarCont>
   );
 }
 
-const SideNavBarCont = styled.div`
+const SideNavBarCont = styled.div<SideNavBarContProps>`
   position: fixed;
   z-index: 9;
   width: 280px;
   height: 100%;
   background-color: ${colors.sideNavBar};
+  transition: transform 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    transform: ${({ isVisible }) =>
+      isVisible ? "translateX(0)" : "translateX(-100%)"};
+  }
 `;
 
 const SideNavMainLink = styled(Link)`
@@ -90,18 +93,50 @@ const SideNavMainLink = styled(Link)`
   font-size: 1.6em;
   font-weight: 700;
   color: white;
+  text-decoration: none;
+
+  &:hover {
+    background-color: ${colors.sideNavBarHover};
+  }
+
+  &.active {
+    background-color: ${colors.primaryColor};
+  }
 `;
 
 const NavIcon = styled.div<NavIconProps>`
   position: absolute;
   right: 35px;
   top: 50%;
+  transform: translateY(-50%);
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
-const SideNavHeader = styled.div``;
+const SideNavHeader = styled.div`
+  padding: 20px 35px 10px;
+`;
 
-const HeaderText = styled.div``;
+const HeaderText = styled.div`
+  color: white;
+  font-size: 1.1em;
+`;
 
 const NavLink = styled(Link)`
   display: block;
+  padding: 10px 35px;
+  color: ${colors.fontColor};
+  text-decoration: none;
+
+  &:hover {
+    background-color: ${colors.sideNavBarHover};
+  }
+
+  &.active {
+    background-color: ${colors.primaryColor};
+    color: ${colors.sideNavBar};
+  }
 `;

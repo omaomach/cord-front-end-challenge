@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import debounce from "lodash/debounce";
 
@@ -6,7 +6,7 @@ import ExpandableFilters from "../expandablefilters";
 import SearchBar from "../searchbar";
 
 type SearchFiltersProps = {
-  genres: { id: number; name: string }[];
+  genres: { [key: number]: string };
   ratings: { id: number; name: number }[];
   languages: { id: string | number; name: string }[];
   searchMovies: (keyword: string, year: string) => void;
@@ -24,6 +24,7 @@ export default function SearchFilters({
 }: SearchFiltersProps) {
   const [keyword, setKeyword] = useState("");
   const [year, setYear] = useState("");
+  const isInitialRender = useRef(true);
 
   const debouncedSearch = useCallback(
     debounce((keyword: string, year: string) => {
@@ -33,19 +34,23 @@ export default function SearchFilters({
   );
 
   useEffect(() => {
-    debouncedSearch(keyword, year);
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    } else {
+      debouncedSearch(keyword, year);
+    }
     return () => {
       debouncedSearch.cancel();
     };
   }, [keyword, year, debouncedSearch]);
 
-  const handleKeywordChange = (value: string) => {
+  const handleKeywordChange = useCallback((value: string) => {
     setKeyword(value);
-  };
+  }, []);
 
-  const handleYearChange = (value: string) => {
+  const handleYearChange = useCallback((value: string) => {
     setYear(value);
-  };
+  }, []);
 
   return (
     <>

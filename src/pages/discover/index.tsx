@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 
@@ -17,7 +17,7 @@ type DiscoverState = {
   results: Movie[];
   movieDetails: Movie | null;
   totalCount: number;
-  genreOptions: Genre[];
+  genreOptions: { [key: number]: string };
   ratingOptions: { id: number; name: number }[];
   languageOptions: { id: string; name: string }[];
   isLoading: boolean;
@@ -63,6 +63,7 @@ export default function Discover() {
           fetcher.getPopularMovies(),
           fetcher.getMovieGenres(),
         ]);
+        console.log(genres);
         setState((prevState) => ({
           ...prevState,
           results: popularMovies.results,
@@ -110,7 +111,7 @@ export default function Discover() {
     getMovieDetails();
   }, [movieId]);
 
-  const searchMovies = async (keyword: string, year: string) => {
+  const searchMovies = useCallback(async (keyword: string, year: string) => {
     try {
       setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
       const results = await fetcher.searchMovies(keyword, year);
@@ -129,7 +130,7 @@ export default function Discover() {
         error: "Failed to search movies",
       }));
     }
-  };
+  }, []);
 
   return (
     <DiscoverWrapper>
@@ -137,14 +138,14 @@ export default function Discover() {
         <MobileNavToggle></MobileNavToggle>
         <MobilePageTitle>Discover</MobilePageTitle>
         <Layout>
-          {/* <MovieFilters>
+          <MovieFilters>
             <SearchFilters
               genres={state.genreOptions}
               ratings={state.ratingOptions}
               languages={state.languageOptions}
               searchMovies={searchMovies}
             />
-          </MovieFilters> */}
+          </MovieFilters>
           <MovieResults>
             {state.isLoading ? (
               <LoadingMessage>Loading...</LoadingMessage>

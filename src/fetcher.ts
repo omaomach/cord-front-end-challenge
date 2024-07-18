@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_API_KEY = 'de52bda19802ed8258a65fea8a041cd7';
-const TMDB_API_AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZTUyYmRhMTk4MDJlZDgyNThhNjVmZWE4YTA0MWNkNyIsIm5iZiI6MTcyMTMxMzU5NS41MDQ2MjYsInN1YiI6IjY2OTkyOGE4NmNjOWI1YmNkNzJjNzg4ZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wW4xnbL7pitUtFzZo41V0S3AFmej-DsxIHMdz1if2eE';
+const TMDB_API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+const TMDB_API_AUTH_TOKEN = process.env.REACT_APP_TMDB_API_AUTH_TOKEN;
+
 
 if (!TMDB_API_KEY || !TMDB_API_AUTH_TOKEN) {
   throw new Error('TMDB API key or Auth Token is missing');
@@ -30,7 +31,7 @@ export const searchMovies = async (query: string, year?: string) => {
     const genres = await getMovieGenres();
     response.data.results = response.data.results.map((movie: any) => ({
       ...movie,
-      genre_names: movie.genre_ids.map((id: number) => genres[id]).filter(Boolean)
+      genre_names: movie.genre_ids.map((id: number) => genres?.[id] || 'Unknown').filter(Boolean)
     }));
     return response.data;
   } catch (error) {
@@ -50,7 +51,7 @@ export const getPopularMovies = async (page = 1) => {
     const genres = await getMovieGenres();
     response.data.results = response.data.results.map((movie: any) => ({
       ...movie,
-      genre_names: movie.genre_ids.map((id: number) => genres[id]).filter(Boolean)
+      genre_names: movie.genre_ids.map((id: number) => genres?.[id] || 'Unknown').filter(Boolean)
     }));
     return response.data;
   } catch (error) {
@@ -75,10 +76,10 @@ export const getMovieDetails = async (movieId: number) => {
 
 
 
-let genreCache: { [key: number]: string } | null = null;
+let genreCache: { [key: number]: string } = {};
 
 export const getMovieGenres = async () => {
-  if (genreCache) return genreCache;
+  if (Object.keys(genreCache).length > 0) return genreCache;
 
   try {
     const response = await tmdbAxios.get('/genre/movie/list', {
@@ -91,6 +92,6 @@ export const getMovieGenres = async () => {
     return genreCache;
   } catch (error) {
     console.error('Error fetching genres:', error);
-    throw error;
+    return {}; 
   }
 };

@@ -3,11 +3,10 @@ import styled from "styled-components";
 
 import Checkbox from "./checkbox";
 import * as colors from "../../colors";
-import { Option } from "../../types/movies";
 
 type ExpandableFiltersProps = {
   title: string;
-  options: Option[];
+  options: any;
 };
 
 export default function ExpandableFilters({
@@ -24,6 +23,8 @@ export default function ExpandableFilters({
     setCheckedItems((prev) => ({ ...prev, [id]: isChecked }));
   };
 
+  const optionsArray = Array.isArray(options) ? options : [];
+
   return (
     <FiltersWrapper>
       <FilterHeader onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
@@ -36,7 +37,7 @@ export default function ExpandableFilters({
           isOpen ? { height: contentRef.current?.scrollHeight } : { height: 0 }
         }
       >
-        {options.map((option) => (
+        {optionsArray.map((option) => (
           <FilterOption key={option.id}>
             <Checkbox
               id={`${title}-${option.id}`}
@@ -50,7 +51,7 @@ export default function ExpandableFilters({
             </FilterLabel>
           </FilterOption>
         ))}
-        {options.length === 0 && <FilterLabel>None</FilterLabel>}
+        {!options && <FilterLabel>None</FilterLabel>}
       </FilterOptions>
     </FiltersWrapper>
   );

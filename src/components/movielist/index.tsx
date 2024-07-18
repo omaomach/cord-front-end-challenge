@@ -8,7 +8,6 @@ type MovieListProps = {
 };
 
 export default function MovieList({ movies }: MovieListProps) {
-  console.log(movies);
   return (
     <MoviesWrapper>
       {movies.map((movie) => (

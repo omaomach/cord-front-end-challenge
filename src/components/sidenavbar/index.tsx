@@ -30,9 +30,8 @@ export default function SideNavBar() {
   return (
     <SideNavBarCont isVisible={isVisible}>
       <SideNavMainLink
-        className="menu_nav_link main_nav_link"
+        className="menu_nav_link main_nav_link home-link"
         to="/"
-        activeClassName="active"
         exact
       >
         Wesley
@@ -40,11 +39,7 @@ export default function SideNavBar() {
           <img src={Arrow} alt="Arrow" />
         </NavIcon>
       </SideNavMainLink>
-      <SideNavMainLink
-        className="menu_nav_link"
-        to="/discover"
-        activeClassName="active"
-      >
+      <SideNavMainLink className="menu_nav_link" to="/discover">
         Discover
         <NavIcon search>
           <img src={SearchWhite} alt="Search" />
@@ -101,6 +96,10 @@ const SideNavMainLink = styled(Link)`
 
   &.active {
     background-color: ${colors.primaryColor};
+  }
+
+  &.home-link {
+    background-color: ${colors.sideNavBar};
   }
 `;
 

@@ -3,10 +3,9 @@ export type Movie = {
   title: string;
   genre: string[];
   image: string;
-  description: string;
+  overview: string;
   rating: number;
-  released: string;
-  // Add other movie properties as needed
+  releaseDate: string;
 };
 
 export type Genre = {

@@ -7,25 +7,8 @@ import * as fetcher from "../../fetcher";
 import SearchFilters from "../../components/searchfilter";
 import MovieList from "../../components/movielist";
 
-//types
-import { Movie } from "../../types/movies";
-import { Genre } from "../../types/movies";
-import { Option } from "../../types/movies";
-
-type DiscoverState = {
-  keyword: string;
-  year: string;
-  results: Movie[];
-  movieDetails: Movie | null;
-  totalCount: number;
-  genreOptions: Genre[];
-  ratingOptions: Option[];
-  languageOptions: Option[];
-};
-
 export default function Discover() {
-  // You don't need to keep the current structure of this state object. Feel free to restructure it as needed.
-  const [state, setState] = useState<DiscoverState>({
+  const [state, setState] = useState({
     keyword: "",
     year: "",
     results: [],
@@ -52,48 +35,80 @@ export default function Discover() {
 
   // Write a function to get the movie details based on the movie id taken from the URL.
 
-  const searchMovies = async (keyword: string, year: string): Promise<void> => {
-    // Write a function to trigger the API request and load the search results based on the keyword and year given as parameters
+  const searchMovies = (keyword: string, year: string) => {
+    console.log(`Search triggered with keyword: ${keyword}, year: ${year}`);
   };
-
-  const {
-    genreOptions,
-    languageOptions,
-    ratingOptions,
-    totalCount,
-    results,
-    movieDetails,
-  } = state;
 
   return (
     <DiscoverWrapper>
-      <MobilePageTitle>Discover</MobilePageTitle>
-      <MovieFilters>
-        <SearchFilters
-          genres={genreOptions}
-          ratings={ratingOptions}
-          languages={languageOptions}
-          searchMovies={searchMovies}
-        />
-      </MovieFilters>
-      <MovieResults>
-        {totalCount > 0 && <TotalCounter>{totalCount} results</TotalCounter>}
-        <MovieList movies={results || []} genres={genreOptions || []} />
-      </MovieResults>
+      <ContentWrapper>
+        <MobileNavToggle></MobileNavToggle>
+        <MobilePageTitle>Discover</MobilePageTitle>
+        <Layout>
+          <MovieFilters>
+            <SearchFilters
+              genres={state.genreOptions}
+              ratings={state.ratingOptions}
+              languages={state.languageOptions}
+              searchMovies={searchMovies}
+            />
+          </MovieFilters>
+          <MovieResults>
+            <TotalCounter>{state.totalCount} movies</TotalCounter>
+            <MovieList movies={state.results} genres={state.genreOptions} />
+          </MovieResults>
+        </Layout>
+      </ContentWrapper>
     </DiscoverWrapper>
   );
 }
 
 const DiscoverWrapper = styled.div`
-  padding: 60px 35px;
+  background-color: ${colors.lightBackground};
+  min-height: 100vh;
+  padding-top: 80px; // Adjust based on your header height
+`;
+
+const MobileNavToggle = styled.div``;
+
+const ContentWrapper = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+`;
+
+const Layout = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 40px;
+
+  @media (max-width: 1090px) {
+    flex-direction: column;
+  }
+`;
+
+const MovieResults = styled.div`
+  flex-grow: 1;
+`;
+
+const MovieFilters = styled.div`
+  width: 280px;
+  flex-shrink: 0;
+
+  @media (max-width: 1090px) {
+    width: 100%;
+  }
+`;
+
+const MobilePageTitle = styled.h1`
+  font-size: 24px;
+  font-weight: 900;
+  color: ${colors.fontColor};
+  margin-bottom: 20px;
 `;
 
 const TotalCounter = styled.div`
   font-weight: 900;
+  margin-bottom: 20px;
+  color: ${colors.fontColor};
 `;
-
-const MovieResults = styled.div``;
-
-const MovieFilters = styled.div``;
-
-const MobilePageTitle = styled.header``;

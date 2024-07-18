@@ -13,7 +13,7 @@ type MovieListProps = {
 };
 
 export default function MovieList({ movies, genres }: MovieListProps) {
-  // Dummy data for demonstration
+  // Dummy data
   const dummyMovies = [
     {
       id: 1,
@@ -47,5 +47,4 @@ export default function MovieList({ movies, genres }: MovieListProps) {
 
 const MoviesWrapper = styled.div`
   position: relative;
-  padding: 20px;
 `;

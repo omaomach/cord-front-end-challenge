@@ -7,8 +7,8 @@ import SearchBar from "../searchbar";
 
 type SearchFiltersProps = {
   genres: { id: number; name: string }[];
-  ratings: { id: string | number; name: string | number }[];
-  languages: { id: string | number; name: string | number }[];
+  ratings: { id: number; name: number }[];
+  languages: { id: string | number; name: string }[];
   searchMovies: (keyword: string, year: string) => void;
 };
 
@@ -16,29 +16,49 @@ type SearchFiltersContProps = {
   marginBottom?: boolean;
 };
 
-export default function SearchFilters({}: SearchFiltersProps) {
+export default function SearchFilters({
+  genres,
+  ratings,
+  languages,
+  searchMovies,
+}: SearchFiltersProps) {
+  const [keyword, setKeyword] = React.useState("");
+  const [year, setYear] = React.useState("");
+
+  React.useEffect(() => {
+    searchMovies(keyword, year);
+  }, [keyword, year, searchMovies]);
+
   return (
-    <FiltersWrapper>
+    <>
       <SearchFiltersCont className="search_inputs_cont" marginBottom>
-        {/* Implement a SearchBar component and use it for both the keyword and the year inputs */}
+        <SearchBar
+          icon="search"
+          placeholder="Search for movies"
+          onChange={setKeyword}
+        />
+        <SearchBar
+          icon="calendar"
+          placeholder="Year of release"
+          onChange={setYear}
+        />
       </SearchFiltersCont>
       <SearchFiltersCont>
         <CategoryTitle>Movies</CategoryTitle>
-        {/* Implement a component called "ExpandableFilters" and use it for the filter categories */}
+        <ExpandableFilters title="Select genre(s)" options={genres} />
+        <ExpandableFilters title="Select min. vote" options={ratings} />
+        <ExpandableFilters title="Select language" options={languages} />
       </SearchFiltersCont>
-    </FiltersWrapper>
+    </>
   );
 }
-
-const FiltersWrapper = styled.div`
-  position: relative;
-`;
 
 const SearchFiltersCont = styled.div<SearchFiltersContProps>`
   background-color: white;
   padding: 20px;
   border-radius: 3px;
   transition: all 0.3s ease-in-out;
+  width: 100%;
 
   ${(props) =>
     props.marginBottom &&
@@ -47,4 +67,7 @@ const SearchFiltersCont = styled.div<SearchFiltersContProps>`
     `}
 `;
 
-const CategoryTitle = styled.div``;
+const CategoryTitle = styled.div`
+  font-weight: bold;
+  margin-bottom: 15px;
+`;

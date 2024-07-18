@@ -28,7 +28,9 @@ export default function App(props: AppProps) {
 }
 
 const ContentWrapper = styled.main`
-  padding-left: 280px;
+  @media (min-width: 768px) {
+    padding-left: 280px;
+  }
 `;
 
 const PageContainer = styled.main`

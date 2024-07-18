@@ -7,6 +7,7 @@ import SideNavBar from "./components/sidenavbar";
 import Discover from "./pages/discover";
 
 import "./css/app.css";
+import ErrorBoundary from "./errorboundary";
 
 type AppProps = {
   [key: string]: any;
@@ -14,16 +15,18 @@ type AppProps = {
 
 export default function App(props: AppProps) {
   return (
-    <Router>
-      <PageContainer>
-        <SideNavBar {...props} />
-        <ContentWrapper>
-          <Switch>
-            <Route path="/discover" component={Discover} {...props} />
-          </Switch>
-        </ContentWrapper>
-      </PageContainer>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <PageContainer>
+          <SideNavBar {...props} />
+          <ContentWrapper>
+            <Switch>
+              <Route path="/discover" component={Discover} {...props} />
+            </Switch>
+          </ContentWrapper>
+        </PageContainer>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

@@ -1,16 +1,16 @@
 export type Movie = {
   id: number;
   title: string;
-  genre: string[];
-  image: string;
+  release_date: string;
   overview: string;
-  rating: number;
-  releaseDate: string;
+  vote_average: number;
+  genre_ids: Genre[];
+  genre_names: string[];
+  poster_path: string;
 };
 
 export type Genre = {
-  id: number;
-  name: string;
+  id: number[];
 };
 
 export type Option = {

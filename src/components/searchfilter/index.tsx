@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled, { css } from "styled-components";
+import debounce from "lodash/debounce";
 
-import * as colors from "../../colors";
 import ExpandableFilters from "../expandablefilters";
 import SearchBar from "../searchbar";
 
@@ -22,12 +22,30 @@ export default function SearchFilters({
   languages,
   searchMovies,
 }: SearchFiltersProps) {
-  const [keyword, setKeyword] = React.useState("");
-  const [year, setYear] = React.useState("");
+  const [keyword, setKeyword] = useState("");
+  const [year, setYear] = useState("");
 
-  React.useEffect(() => {
-    searchMovies(keyword, year);
-  }, [keyword, year, searchMovies]);
+  const debouncedSearch = useCallback(
+    debounce((keyword: string, year: string) => {
+      searchMovies(keyword, year);
+    }, 300),
+    [searchMovies]
+  );
+
+  useEffect(() => {
+    debouncedSearch(keyword, year);
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [keyword, year, debouncedSearch]);
+
+  const handleKeywordChange = (value: string) => {
+    setKeyword(value);
+  };
+
+  const handleYearChange = (value: string) => {
+    setYear(value);
+  };
 
   return (
     <>
@@ -35,12 +53,12 @@ export default function SearchFilters({
         <SearchBar
           icon="search"
           placeholder="Search for movies"
-          onChange={setKeyword}
+          onChange={handleKeywordChange}
         />
         <SearchBar
           icon="calendar"
           placeholder="Year of release"
-          onChange={setYear}
+          onChange={handleYearChange}
         />
       </SearchFiltersCont>
       <SearchFiltersCont>
